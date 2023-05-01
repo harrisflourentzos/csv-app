@@ -1,4 +1,4 @@
-class User {
+export class User {
   firstName: string;
   lastName: string;
   jobTitle: string;
@@ -43,5 +43,3 @@ class User {
     this.addressCountry = addressCountry;
   }
 }
-
-export default User;

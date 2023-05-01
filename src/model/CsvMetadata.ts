@@ -1,4 +1,4 @@
-class CsvMetadata {
+export class CsvMetadata {
   id: string;
   filename: string;
 
@@ -7,5 +7,3 @@ class CsvMetadata {
     this.filename = filename;
   }
 }
-
-export default CsvMetadata;

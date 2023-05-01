@@ -32,16 +32,21 @@ function FileUploader({ onFileUpdloaded }: Props) {
   }
 
   function onCancelUpload() {
+    resetStates();
+  }
+
+  function resetStates() {
     setFileName("");
     setFileContent("");
+    setError("");
   }
 
   async function onUploadFile() {
     try {
       if (fileName && fileContent) {
-        console.log(fileName, fileContent);
         const response = await saveCsv(fileName, fileContent);
         onFileUpdloaded(response);
+        resetStates();
       }
     } catch (e) {
       setError((e as Error).message);

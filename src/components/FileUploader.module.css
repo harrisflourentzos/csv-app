@@ -46,3 +46,7 @@
   background-color: var(--red-solid-100);
   border-color: var(--red-solid-100);
 }
+
+.errorText {
+  color: var(--red-solid-300);
+}

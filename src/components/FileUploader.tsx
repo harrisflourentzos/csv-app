@@ -1,12 +1,16 @@
 import React, { useRef, useState } from "react";
 import classes from "./FileUploader.module.css";
+import { CsvMetadata } from "../model/CsvMetadata";
+import { saveCsv } from "../api/DotNetApi";
 
-type Props = {};
+type Props = { onFileUpdloaded: (metadata: CsvMetadata) => void };
 
-function FileUploader({}: Props) {
+function FileUploader({ onFileUpdloaded }: Props) {
   const inputFileRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState<string>();
   const [fileContent, setFileContent] = useState<string>();
+
+  const [error, setError] = useState<string>();
 
   function onFileChangeCapture(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files && e.target.files[0]) {
@@ -32,7 +36,17 @@ function FileUploader({}: Props) {
     setFileContent("");
   }
 
-  function onUploadFile() {}
+  async function onUploadFile() {
+    try {
+      if (fileName && fileContent) {
+        console.log(fileName, fileContent);
+        const response = await saveCsv(fileName, fileContent);
+        onFileUpdloaded(response);
+      }
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  }
 
   return (
     <div className={classes.container}>
@@ -58,6 +72,7 @@ function FileUploader({}: Props) {
           </button>
         </div>
       )}
+      {error && <p className={classes.errorText}>{error}</p>}
     </div>
   );
 }

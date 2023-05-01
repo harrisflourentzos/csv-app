@@ -2,7 +2,7 @@ import { CsvMetadata } from "../model/CsvMetadata";
 import { CsvUsers } from "../model/CsvUsers";
 import { User } from "../model/User";
 
-const ASPNET_DOMAIN = "api/users";
+const ASPNET_DOMAIN = "https://localhost:7038/api/users";
 
 export async function getAllCsvs() {
   const response = await fetch(`${ASPNET_DOMAIN}/metadata`);

@@ -1,5 +1,3 @@
-import React, { useEffect } from "react";
-import useHttp from "../hooks/use-http";
 import {
   Paper,
   Table,
@@ -11,51 +9,33 @@ import {
 } from "@mui/material";
 import { User } from "../model/User";
 import classes from "./FileViewer.module.css";
+import { useEffect, useState } from "react";
+import { getCsvUsers } from "../api/DotNetApi";
 
 type Props = { csvId?: string };
 
 function FileViewer({ csvId }: Props) {
-  // const { sendRequest, status, data, error } = useHttp(getCsvUsers, true);
+  const [users, setUsers] = useState<User[]>();
 
-  // useEffect(() => {
-  //   sendRequest(csvId);
-  // }, [csvId, sendRequest]);
+  const [error, setError] = useState<string>();
 
-  const data = [
-    new User(
-      "firstName",
-      "lastName",
-      "jobTitle",
-      "emailaddress1",
-      "department",
-      "contactType",
-      "companyName",
-      "businessPhone",
-      "addressStreet1",
-      "addressStreet2",
-      "addressCity",
-      "addressPostalcode",
-      "addressCountry"
-    ),
-    new User(
-      "firstName2",
-      "lastName2",
-      "jobTitle2",
-      "emailaddress12",
-      "department2",
-      "contactType2",
-      "companyName2",
-      "businessPhone2",
-      "addressStreet12",
-      "addressStreet22",
-      "addressCity2",
-      "addressPostalcode2",
-      "addressCountry2"
-    ),
-  ];
+  useEffect(() => {
+    async function dispatch() {
+      if (csvId) {
+        try {
+          const response = await getCsvUsers(csvId);
+          setUsers(response.users);
+        } catch (e) {
+          setError((e as Error).message);
+        }
+      }
+    }
+    dispatch();
+  }, [csvId]);
 
   return (
     <div className={classes.container}>
+      {error && <p>{error}</p>}
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -76,7 +56,7 @@ function FileViewer({ csvId }: Props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((row: User) => (
+            {users?.map((row: User) => (
               <TableRow
                 key={row.firstName}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}

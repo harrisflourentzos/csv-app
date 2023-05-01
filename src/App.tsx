@@ -1,7 +1,6 @@
 import React from "react";
 import Header from "./components/Header";
 import FileUploader from "./components/FileUploader";
-import FileCollection from "./components/FileCollection";
 import FileViewer from "./components/FileViewer";
 
 function App() {
@@ -10,7 +9,6 @@ function App() {
       <Header />
       <main>
         <FileUploader />
-        <FileCollection />
         <FileViewer />
       </main>
     </>

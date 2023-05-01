@@ -1,48 +1,40 @@
-const FIREBASE_DOMAIN =
-  "https://learningreact-4a2be-default-rtdb.firebaseio.com";
+import { CsvMetadata } from "../model/CsvMetadata";
+import { CsvUsers } from "../model/CsvUsers";
+import { User } from "../model/User";
 
-export async function getAllQuotes() {
-  const response = await fetch(`${FIREBASE_DOMAIN}/quotes.json`);
+const ASPNET_DOMAIN = "api/users";
+
+export async function getAllCsvs() {
+  const response = await fetch(`${ASPNET_DOMAIN}/metadata`);
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.message || "Could not fetch quotes.");
+    throw new Error(data.message || "Could not fetch all Csv files.");
   }
 
-  const transformedQuotes = [];
+  const metadata = data as CsvMetadata[];
 
-  for (const key in data) {
-    const quoteObj = {
-      id: key,
-      ...data[key],
-    };
-
-    transformedQuotes.push(quoteObj);
-  }
-
-  return transformedQuotes;
+  return metadata;
 }
 
-export async function getSingleQuote(quoteId: any) {
-  const response = await fetch(`${FIREBASE_DOMAIN}/quotes/${quoteId}.json`);
+export async function getCsvUsers(csvId: string) {
+  const response = await fetch(`${ASPNET_DOMAIN}/${csvId}`);
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.message || "Could not fetch quote.");
+    throw new Error(data.message || "Could not fetch Csv file.");
   }
 
-  const loadedQuote = {
-    id: quoteId,
-    ...data,
-  };
+  const metadata = data.metadata as CsvMetadata;
+  const users = data.users as User[];
 
-  return loadedQuote;
+  return new CsvUsers(metadata, users);
 }
 
-export async function addQuote(quoteData: any) {
-  const response = await fetch(`${FIREBASE_DOMAIN}/quotes.json`, {
+export async function saveCsv(filename: string, csvContent: string) {
+  const response = await fetch(`${ASPNET_DOMAIN}/upload`, {
     method: "POST",
-    body: JSON.stringify(quoteData),
+    body: JSON.stringify({ filename: filename, content: csvContent }),
     headers: {
       "Content-Type": "application/json",
     },
@@ -50,51 +42,10 @@ export async function addQuote(quoteData: any) {
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.message || "Could not create quote.");
+    throw new Error(data.message || "Could not upload Csv file.");
   }
 
-  return null;
-}
+  const metadata = new CsvMetadata(data.id, data.filename, data.timestamp);
 
-export async function addComment(requestData: any) {
-  const response = await fetch(
-    `${FIREBASE_DOMAIN}/comments/${requestData.quoteId}.json`,
-    {
-      method: "POST",
-      body: JSON.stringify(requestData.commentData),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || "Could not add comment.");
-  }
-
-  return { commentId: data.name };
-}
-
-export async function getAllComments(quoteId: any) {
-  const response = await fetch(`${FIREBASE_DOMAIN}/comments/${quoteId}.json`);
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || "Could not get comments.");
-  }
-
-  const transformedComments = [];
-
-  for (const key in data) {
-    const commentObj = {
-      id: key,
-      ...data[key],
-    };
-
-    transformedComments.push(commentObj);
-  }
-
-  return transformedComments;
+  return metadata;
 }

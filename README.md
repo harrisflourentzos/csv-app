@@ -1,46 +1,35 @@
-# Getting Started with Create React App
+# Csv-App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is the front-end of an interview coding excercise. The excercise asks to create a full stack application which will allow the users to select a local csv file from his machine via a web gui (React JS), send it to a back-end (ASP.NET Web API) which will parse the csv file content and save it in an SQL db. The front-end will finally display the parsed data in a tabular format.
 
-## Available Scripts
+## How to Compile
 
-In the project directory, you can run:
+### React Front-End
 
-### `npm start`
+1. Open the project with VScode and install dependencies with <b>npm install</b>.
+2. Run the project with <b>npm start</b>.
+3. The front-end assumes the back-end is served locally on https://localhost:7038.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### ASP.NET Core Web Api
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+1. Open the solution file with Visual Studio
+2. Create a local db called <b>CsvUsers</b> and run the script <b>DbScript.sql</b> using <b>SQL server</b>.
+3. Build and Run the project.
+4. The back-end allows CORS policies for https://localhost:3000, so front-end needs to be served on that.
 
-### `npm test`
+## Design Decisions, Limitations and Discussion
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Front-End
 
-### `npm run build`
+- No time to implement viewing multiple csv uploads (back-end supports it though)
+- Table has a bug that does not display all values even though they are fetched correctly from the back-end
+- Reseting a selected file with the cancel button is bugged.
+- NO time to implement unit tests
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Back-End
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- Assumes csv has the same structure
+- Assumes no multiple newlines per row
+- No time to implement unit tests
+- Could have normalized data into UserDetails and Addresses tables (alternative approach)
+- Could have assumed User to be unique(need a way to identify) and updated user details with subsequent csv file uploads, instead of just saving as new entry. This of course depends on requirement in a real project (discuss further during interview)
